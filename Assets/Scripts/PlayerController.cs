@@ -18,10 +18,23 @@ public class PlayerController : MonoBehaviour
     public float airTimeCounter;
 
     private Animator theAnimator;
+
+    public GameManager theGM;
+    private LivesManager theLM;
+
+    public bool sprung;
+    public LayerMask whatIsSpr;
+    public bool teleport;
+    public LayerMask whatIsTel;
+    public bool ceiling;
+    public LayerMask whatIsCei;
+    public Transform ceiChecker;
+    public float ceiCheckerRad;
     
     // Start is called before the first frame update
     void Start()
     {
+        theLM = FindObjectOfType<LivesManager>();
         theRB2D = GetComponent<Rigidbody2D>();
         theAnimator = GetComponent<Animator>();
 
@@ -36,10 +49,29 @@ public class PlayerController : MonoBehaviour
             canMove = true;
         }
         v = new Vector2(Input.GetAxisRaw("Horizontal") * speed, theRB2D.velocity.y);
-        Debug.Log(v);
         MovePlayer();
         grounded = Physics2D.OverlapCircle(grdChecker.position, grdCheckerRad, whatIsGrd);
+        sprung = Physics2D.OverlapCircle(grdChecker.position, grdCheckerRad, whatIsSpr);
+        teleport = Physics2D.OverlapCircle(grdChecker.position, grdCheckerRad, whatIsTel);
+        ceiling = Physics2D.OverlapCircle(ceiChecker.position, ceiCheckerRad, whatIsCei);
+        if (sprung == true)
+        {
+            theRB2D.velocity = new Vector2(theRB2D.velocity.x, 50);
+        }
+        if(teleport == true)
+        {
+            Vector2 newpos = new Vector2(-6.6f, 3.5f);
+            theRB2D.MovePosition(newpos);
+        }
+        if (ceiling == true)
+        {
+            transform.localScale = new Vector2(-1f, -1f);
+            Physics2D.gravity = new Vector2(0, 0);
+        }
+        Physics2D.gravity = new Vector2(0, -9.8f);
+
         Jump();
+ 
     }
 
    private void fixedUpdate()
@@ -90,7 +122,18 @@ public class PlayerController : MonoBehaviour
         {
             airTimeCounter = airTime;
         }
+      
 
         theAnimator.SetBool("Grounded", grounded);
+    }
+   
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.gameObject.tag == "Spike")
+        {
+            Debug.Log("Ouch");
+            //theGM.GameOver();
+            theLM.TakeLife();
+        }
     }
 }
