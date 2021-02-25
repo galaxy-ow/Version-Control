@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float speed;
+    public float dfltSpeed;
     public float jumpForce;
     private bool canMove;
     private Rigidbody2D theRB2D;
@@ -39,6 +40,7 @@ public class PlayerController : MonoBehaviour
         theAnimator = GetComponent<Animator>();
 
         airTimeCounter = airTime;
+        dfltSpeed = speed;
     }
 
     // Update is called once per frame
@@ -133,6 +135,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Ouch");
             //theGM.GameOver();
+            theGM.Reset();
             theLM.TakeLife();
         }
     }
