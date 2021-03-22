@@ -23,9 +23,9 @@ TagManager:
   - ceiling
   - Player
   - Enemy
-  - 
-  - 
-  - 
+  - Stomper
+  - Spikes
+  - Hurtbox
   - 
   - 
   - 
